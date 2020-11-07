@@ -1,8 +1,9 @@
 import {compareResults} from './utils';
 
 export interface DiagnoseOptions {
-  fullCheck: boolean ;
-  literal: boolean;
+  fullCheck?: boolean ;
+  literal?: boolean;
+  [index: string]: any;
 }
 
 const defaultOptions: DiagnoseOptions = {
@@ -33,13 +34,13 @@ class ExamResults {
  * isn't an instance of the Disease class.
  */
 export class Diagnose<
-    Input extends unknown[],
+    // Input extends unknown[],
     Output extends unknown,
-    PossibleError extends unknown,
+    // PossibleError extends unknown,
   > {
-  yourFunction: (...args: Input) => Output;
-  expectedErrors: PossibleError[];
-  yourFunctionArgs: Input | [];
+  yourFunction: (...args: any[]) => Output;
+  expectedErrors: unknown[];
+  yourFunctionArgs: any[];
   options: DiagnoseOptions;
 
   /**
@@ -50,9 +51,9 @@ export class Diagnose<
    *  your function.
    */
   constructor(
-      expectedErrors: PossibleError[],
-      yourFunction: (...args: Input) => Output,
-      yourFunctionArgs?: Input,
+      expectedErrors: unknown[],
+      yourFunction: (...args: any[]) => Output,
+      yourFunctionArgs?: any[],
   ) {
     this.yourFunction = yourFunction;
     this.expectedErrors = expectedErrors;
@@ -67,7 +68,9 @@ export class Diagnose<
    * @return {Diagnose} - The same object inwhich the function was called.
    */
   setOptions(optionsToSet: DiagnoseOptions) {
-    this.options = optionsToSet;
+    for (const option of Object.keys(optionsToSet)) {
+      this.options[option] = optionsToSet[option];
+    }
     return this;
   }
 
@@ -85,9 +88,7 @@ export class Diagnose<
     let yourFunctionResult: unknown;
 
     try {
-      yourFunctionResult = this.yourFunction(
-          ...(this.yourFunctionArgs as Input),
-      );
+      yourFunctionResult = this.yourFunction(...this.yourFunctionArgs);
     } catch (someError) {
       yourFunctionResult = someError;
     }
@@ -148,7 +149,7 @@ export class Diagnose<
     return new ExamResults(
         this.expectedErrors.some(
             (someError) => {
-              return compareResults(result, someError, literal);
+              return compareResults(result, someError, literal ?? false);
             },
         ), result);
   }
