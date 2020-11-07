@@ -30,7 +30,8 @@
     "build": "./scripts/build.sh",
     "compile": "./scripts/compile.sh",
     "test": "./scripts/test.sh",
-    "clean": "./scripts/clean.sh"
+    "clean": "./scripts/clean.sh",
+    "generateTests": "deno run hide-generator.ts"
   },
   "dependencies": {
     "lodash": "^4.17.20"
