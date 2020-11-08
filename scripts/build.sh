@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-npx webpack --config webpack.dev.js
+npx rollup -c rollup.config.js
