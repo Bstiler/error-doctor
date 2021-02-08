@@ -9,6 +9,6 @@ import {Patient} from './patient';
  */
 export function check<Input extends unknown[], Output>(
     yourFunction: (...args: Input) => Output,
-    ...yourFunctionArgs: Input) {
+    ...yourFunctionArgs: Input): Patient<Input, Output> {
   return new Patient(yourFunction, yourFunctionArgs);
 }
